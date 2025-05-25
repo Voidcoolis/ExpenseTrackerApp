@@ -7,6 +7,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import ManageExpenses from "./screens/ManageExpenses";
 import { GlobalStyles } from "./constants/styles";
 import { Ionicons } from "@expo/vector-icons";
+import IconButton from "./components/UI/IconButton";
 
 const Stack = createStackNavigator();
 const BottomsTab = createBottomTabNavigator();
@@ -20,6 +21,14 @@ function ExpenseOverview() {
         tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
         tabBarInactiveTintColor: "white",
+        headerRight: ({ tintColor }) => (
+          <IconButton
+            icon="add"
+            size={24}
+            color={tintColor}
+            onPressBtn={() => {}}
+          />
+        ),
       }}
     >
       <BottomsTab.Screen
@@ -33,8 +42,10 @@ function ExpenseOverview() {
           ),
         }}
       />
-      <BottomsTab.Screen name="AllExpenses" component={AllExpenses} 
-      options={{
+      <BottomsTab.Screen
+        name="AllExpenses"
+        component={AllExpenses}
+        options={{
           title: "All Expenses",
           tabBarLabel: "All expenses",
           tabBarIcon: ({ color, size }) => (

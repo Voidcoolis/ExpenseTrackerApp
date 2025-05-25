@@ -2,9 +2,18 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
 import { getFormattedDate } from "../../utilis/date";
 
-function ExpenseItem({ description = "No description provided", amount = 0, date = new Date() }) {
+function ExpenseItem({ description, amount, date = new Date() }) {
+  function expensePressHandler() {
+    // Handle the press event, e.g., navigate to a detail screen
+    console.log("Expense item pressed:", description);
+  }
+
   return (
-    <Pressable>
+    <Pressable
+      onPress={expensePressHandler}
+      style={({ pressed }) => pressed && styles.pressedStyle}
+      android_ripple={{ color: "#ccc" }}
+    >
       <View style={styles.expenseItemStyle}>
         {/* Left section: description and date */}
         <View style={styles.textContainer}>
@@ -26,6 +35,9 @@ function ExpenseItem({ description = "No description provided", amount = 0, date
 export default ExpenseItem;
 
 const styles = StyleSheet.create({
+  pressedStyle: {
+    opacity: 0.75,
+  },
   expenseItemStyle: {
     padding: 12,
     backgroundColor: GlobalStyles.colors.primary50,
