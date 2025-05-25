@@ -3,11 +3,13 @@ import { GlobalStyles } from "../../constants/styles";
 import { getFormattedDate } from "../../utilis/date";
 import { useNavigation } from "@react-navigation/native";
 
-function ExpenseItem({ description, amount, date = new Date() }) {
+function ExpenseItem({ id, description, amount, date = new Date() }) {
   const navigation = useNavigation();
-  
+
   function expensePressHandler() {
-    navigation.navigate("ManageExpenses");
+    navigation.navigate("ManageExpenses", {
+      expenseId: id, // This should be dynamic based on the expense item. For + icon to extract in ManageExpenses.js
+    });
   }
 
   return (
