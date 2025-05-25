@@ -16,7 +16,7 @@ function ExpensesOutput({expenses, expensesPeriod}) {  //will be used in AllExpe
   return (
     <View>
         <ExpensesSummary expenses={DUMMY_EXPENSES} periodName={expensesPeriod}/>
-        <ExpensesList />
+        <ExpensesList expenses={DUMMY_EXPENSES}/>
     </View>
   );
 }
