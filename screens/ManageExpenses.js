@@ -2,6 +2,7 @@ import { useLayoutEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
+import CustomButton from "../components/UI/CustomButton";
 
 function ManageExpenses({ route, navigation }) {
   //to ectract the expenseId from the route params
@@ -15,9 +16,19 @@ function ManageExpenses({ route, navigation }) {
   }, [navigation, isEditing]);
 
   function deleteExpenseHandler() {}
+  function cancelHandler() {}
+  function confirmHandler() {}
 
   return (
     <View style={styles.screenContainer}>
+      <View style={styles.customBtns}>
+        <CustomButton mode="flat" onPressBtn={cancelHandler} style={styles.custumButton}>
+          Cancel
+        </CustomButton>
+        <CustomButton mode="flat" onPressBtn={confirmHandler} style={styles.custumButton}>
+          {isEditing ? "Update" : Add}
+        </CustomButton>
+      </View>
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -38,13 +49,22 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     padding: 24,
-    backgroundColor: GlobalStyles.colors.primary50,
+    backgroundColor: GlobalStyles.colors.primary100,
+  },
+  customBtns: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  custumButton: {
+    minWidth: 120,
+    marginHorizontal: 12,
   },
   deleteContainer: {
     marginTop: 16,
     paddingTop: 8,
     borderTopWidth: 2,
-    borderTopColor: GlobalStyles.colors.primary200,
+    borderTopColor: GlobalStyles.colors.primary400,
     alignItems: "center",
   },
 });
