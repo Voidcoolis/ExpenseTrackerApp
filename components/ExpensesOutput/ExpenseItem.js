@@ -1,22 +1,22 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
+import { getFormattedDate } from "../../utilis/date";
 
-function ExpenseItem({ description, amount, date }) {
-  const expense = {
-    description: description || "No description provided",
-    amount: amount || 0,
-    date: date || new Date(),
-  };
-
+function ExpenseItem({ description = "No description provided", amount = 0, date = new Date() }) {
   return (
     <Pressable>
       <View style={styles.expenseItemStyle}>
-        <Text style={[styles.textBase, styles.textDescription]}>
-          {expense.description}
-        </Text>
-        <Text style={styles.textBase}>{expense.date.toLocaleDateString()}</Text>
+        {/* Left section: description and date */}
+        <View style={styles.textContainer}>
+          <Text style={[styles.textBase, styles.textDescription]}>
+            {description}
+          </Text>
+          <Text style={styles.textBase}>{getFormattedDate(date)}</Text>
+        </View>
+
+        {/* Right section: amount */}
         <View style={styles.amountContainer}>
-          <Text style={styles.amountText}>{expense.amount}€</Text>
+          <Text style={styles.amountText}>{amount.toFixed(2)}€</Text>
         </View>
       </View>
     </Pressable>
@@ -40,8 +40,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3,
   },
+  textContainer: {
+    flex: 1,
+    flexDirection: "column",
+  },
   textBase: {
-    color: GlobalStyles.colors.primary50,
+    color: GlobalStyles.colors.primary500,
   },
   textDescription: {
     fontSize: 16,
@@ -56,6 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 4,
+    minWidth: 80,
   },
   amountText: {
     color: GlobalStyles.colors.primary500,
