@@ -2,11 +2,10 @@ import { FlatList, Text, View } from "react-native";
 import ExpensesSummary from "./ExpensesSummary";
 import ExpensesList from "./ExpensesList";
 
-//expenses summary
-function ExpensesOutput({expenses}) {
+function ExpensesOutput({expenses, expensesPeriod}) {  //will be used in AllExpenses and RecentExpenses screens
   return (
     <View>
-        <ExpensesSummary />
+        <ExpensesSummary expenses={expenses} periodName={expensesPeriod}/>
         <ExpensesList />
     </View>
   );
