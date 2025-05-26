@@ -15,13 +15,13 @@ export const DUMMY_EXPENSES = [
     id: "e3",
     description: "Utilities",
     amount: 114.99,
-    date: new Date("2025-04-21"),
+    date: new Date("2025-05-21"),
   },
   {
     id: "e4",
     description: "Internet",
     amount: 39.99,
-    date: new Date("2025-05-15"),
+    date: new Date("2025-05-25"),
   },
   {
     id: "e5",
@@ -63,7 +63,7 @@ export const DUMMY_EXPENSES = [
     id: "e11",
     description: "Travel",
     amount: 300.00,
-    date: new Date("2025-12-20"),
+    date: new Date("2025-05-20"),
   },
   {
     id: "e12",
