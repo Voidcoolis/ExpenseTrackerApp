@@ -34,12 +34,6 @@ function ExpensesContextProvider({ children }) {
   const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES); // never hook
 
   function addExpense(expenseData) {
-    const newExpense = {
-      id: Math.random().toString(), // generate a unique id
-      description,
-      amount,
-      date: date || new Date(), // default to current date if not provided
-    };
     dispatch({ type: "ADD", payload: expenseData });
   }
 

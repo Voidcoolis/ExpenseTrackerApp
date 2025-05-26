@@ -1,10 +1,13 @@
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import CustomButton from "../components/UI/CustomButton";
+import { ExpensesContext } from "../store/expense-context";
 
 function ManageExpenses({ route, navigation }) {
+  const expensesCtx = useContext(ExpensesContext);
+
   //to ectract the expenseId from the route params
   const editedExpenseId = route.params?.expenseId; // optional chaining to avoid errors if expenseId is not provided
   const isEditing = !!editedExpenseId; // convert to boolean, true if editedExpenseId exists
@@ -16,23 +19,45 @@ function ManageExpenses({ route, navigation }) {
   }, [navigation, isEditing]);
 
   function deleteExpenseHandler() {
+    expensesCtx.deleteExpense(editedExpenseId);
     navigation.goBack();
   }
   function cancelHandler() {
     navigation.goBack(); // navigate back to the previous screen or closes the modal
   }
   function confirmHandler() {
+    if (isEditing) {
+      expensesCtx.updateExpense(editedExpenseId, {
+        description: "Test!!!",
+        amount: 112.99,
+        date: new Date("2025-05-24"),
+      });
+    } else {
+      expensesCtx.addExpense({
+        description: "Test",
+        amount: 19.99,
+        date: new Date("2025-05-23"),
+      });
+    }
     navigation.goBack();
   }
 
   return (
     <View style={styles.screenContainer}>
       <View style={styles.customBtns}>
-        <CustomButton mode="flat" onPressBtn={cancelHandler} style={styles.custumButton}>
+        <CustomButton
+          mode="flat"
+          onPressBtn={cancelHandler}
+          style={styles.custumButton}
+        >
           Cancel
         </CustomButton>
-        <CustomButton mode="flat" onPressBtn={confirmHandler} style={styles.custumButton}>
-          {isEditing ? "Update" : Add}
+        <CustomButton
+          mode="flat"
+          onPressBtn={confirmHandler}
+          style={styles.custumButton}
+        >
+          {isEditing ? "Update" : "Add"}
         </CustomButton>
       </View>
       {isEditing && (
