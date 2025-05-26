@@ -1,7 +1,9 @@
+// CustomButton.js
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { GlobalStyles } from "../../constants/styles";
+import Ionicons from "@expo/vector-icons/Ionicons"; // or "react-native-vector-icons/Ionicons"
 
-function CustomButton({ children, onPressBtn, mode, style }) {
+function CustomButton({ children, onPressBtn, mode, style, icon }) {
   return (
     <View style={[styles.buttonWrapper, style]}>
       <Pressable
@@ -12,6 +14,14 @@ function CustomButton({ children, onPressBtn, mode, style }) {
         ]}
       >
         <View style={[styles.button, mode === "flat" && styles.flat]}>
+          {icon && (
+            <Ionicons
+              name={icon}
+              size={18}
+              color="white"
+              style={styles.icon}
+            />
+          )}
           <Text
             style={[
               styles.buttonText,
@@ -31,36 +41,27 @@ export default CustomButton;
 const styles = StyleSheet.create({
   buttonWrapper: {
     backgroundColor: GlobalStyles.colors.accent50,
-    padding: 4,
-    borderRadius: 12,
+    borderRadius: 20,
     marginVertical: 6,
     elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
   },
   pressable: {
-    borderRadius: 4,
+    borderRadius: 20,
     overflow: "hidden",
   },
   button: {
-    borderRadius: 8,
+    flexDirection: "row",
+    gap: 8,
+    borderRadius: 20,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     backgroundColor: GlobalStyles.colors.primary500,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
     alignItems: "center",
     justifyContent: "center",
   },
   flat: {
     backgroundColor: "transparent",
     elevation: 0,
-    shadowOpacity: 0,
   },
   buttonText: {
     color: "white",
@@ -72,5 +73,8 @@ const styles = StyleSheet.create({
   },
   pressedStyle: {
     opacity: 0.85,
+  },
+  icon: {
+    marginRight: 6,
   },
 });

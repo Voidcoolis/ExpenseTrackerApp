@@ -73,12 +73,16 @@ export default function App() {
           }}
         >
           <Stack.Screen
-            name="ExpenseOverview"
+            name="Expenses"
             component={ExpenseOverview}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="ManageExpenses" component={ManageExpenses} options={{
             presentation: "modal", // this will make the screen appear as a modal (on ios is more effective)
+            /* 
+            headerBackTitle: "", // ← this removes "Expenses" from the back button title
+            headerBackTitleVisible: false,
+             */
           }}/>
         </Stack.Navigator>
       </NavigationContainer>

@@ -8,13 +8,13 @@ import { ExpensesContext } from "../store/expense-context";
 function ManageExpenses({ route, navigation }) {
   const expensesCtx = useContext(ExpensesContext);
 
-  //to ectract the expenseId from the route params
-  const editedExpenseId = route.params?.expenseId; // optional chaining to avoid errors if expenseId is not provided
-  const isEditing = !!editedExpenseId; // convert to boolean, true if editedExpenseId exists
+  const editedExpenseId = route.params?.expenseId;
+  const isEditing = !!editedExpenseId;
 
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? "Edit Expense" : "Add Expense",
+      headerBackTitleVisible: false,
     });
   }, [navigation, isEditing]);
 
@@ -22,9 +22,11 @@ function ManageExpenses({ route, navigation }) {
     expensesCtx.deleteExpense(editedExpenseId);
     navigation.goBack();
   }
+
   function cancelHandler() {
-    navigation.goBack(); // navigate back to the previous screen or closes the modal
+    navigation.goBack();
   }
+
   function confirmHandler() {
     if (isEditing) {
       expensesCtx.updateExpense(editedExpenseId, {
@@ -44,32 +46,34 @@ function ManageExpenses({ route, navigation }) {
 
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.customBtns}>
+      <View style={styles.buttonsCard}>
         <CustomButton
           mode="flat"
           onPressBtn={cancelHandler}
-          style={styles.custumButton}
+          style={styles.button}
+          icon="close"
         >
           Cancel
         </CustomButton>
         <CustomButton
           mode="flat"
           onPressBtn={confirmHandler}
-          style={styles.custumButton}
+          style={styles.button}
+          icon={isEditing ? "create" : "add"}
         >
           {isEditing ? "Update" : "Add"}
         </CustomButton>
-      </View>
-      {isEditing && (
-        <View style={styles.deleteContainer}>
+
+        {isEditing && (
           <IconButton
-            icon="trash"
+            icon="trash-outline"
             color={GlobalStyles.colors.error500}
-            size={36}
+            size={30}
             onPressBtn={deleteExpenseHandler}
+            style={styles.trashIcon}
           />
-        </View>
-      )}
+        )}
+      </View>
     </View>
   );
 }
@@ -81,21 +85,27 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary100,
+    justifyContent: "flex-start",
   },
-  customBtns: {
+  buttonsCard: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 16,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
+    marginTop: 24,
   },
-  custumButton: {
-    minWidth: 120,
-    marginHorizontal: 12,
+  button: {
+    flex: 1,
+    marginHorizontal: 8,
   },
-  deleteContainer: {
-    marginTop: 16,
-    paddingTop: 8,
-    borderTopWidth: 2,
-    borderTopColor: GlobalStyles.colors.primary400,
-    alignItems: "center",
+  trashIcon: {
+    marginLeft: 8,
   },
 });
