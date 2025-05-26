@@ -15,9 +15,15 @@ function ManageExpenses({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {}
-  function cancelHandler() {}
-  function confirmHandler() {}
+  function deleteExpenseHandler() {
+    navigation.goBack();
+  }
+  function cancelHandler() {
+    navigation.goBack(); // navigate back to the previous screen or closes the modal
+  }
+  function confirmHandler() {
+    navigation.goBack();
+  }
 
   return (
     <View style={styles.screenContainer}>
