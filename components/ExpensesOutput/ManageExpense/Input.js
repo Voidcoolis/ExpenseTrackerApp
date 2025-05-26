@@ -1,28 +1,32 @@
 import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
 import { GlobalStyles } from "../../../constants/styles";
 
-// Add optional `customInput` prop to replace default TextInput
-function Input({ label, textInputConfig, customInput }) {
+function Input({ label, textInputConfig, customInput, suffix }) {
   return (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
+
       {customInput ? (
-        <Pressable style={styles.textInput} onPress={customInput.onPress}>
-          <Text style={{ color: GlobalStyles.colors.primary700 }}>
-            {customInput.displayValue}
-          </Text>
+        <Pressable style={[styles.inputBox]} onPress={customInput.onPress}>
+          <Text style={styles.inputText}>{customInput.displayValue}</Text>
         </Pressable>
       ) : (
-        <TextInput style={styles.textInput} {...textInputConfig} />
+        <View style={[styles.inputBox, styles.inputWithSuffix]}>
+          <TextInput
+            style={[styles.textInput, { flex: 1, paddingRight: suffix ? 0 : 6 }]}
+            {...textInputConfig}
+          />
+          {suffix && <Text style={styles.suffix}>{suffix}</Text>}
+        </View>
       )}
     </View>
   );
 }
+
 export default Input;
 
 const styles = StyleSheet.create({
   inputContainer: {
-    marginHorizontal: 4,
     marginVertical: 8,
   },
   label: {
@@ -30,14 +34,29 @@ const styles = StyleSheet.create({
     color: GlobalStyles.colors.primary500,
     marginBottom: 6,
   },
-  textInput: {
+  inputBox: {
     backgroundColor: GlobalStyles.colors.primary100,
-    paddingHorizontal: 6,
-    paddingVertical: 8,
-    fontSize: 18,
-    color: GlobalStyles.colors.primary700,
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 8,
+  },
+  inputWithSuffix: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  textInput: {
+    fontSize: 18,
+    color: GlobalStyles.colors.primary700,
+  },
+  inputText: {
+    fontSize: 18,
+    color: GlobalStyles.colors.primary700,
+  },
+  suffix: {
+    fontSize: 18,
+    color: GlobalStyles.colors.primary700,
+    marginLeft: 4,
   },
 });

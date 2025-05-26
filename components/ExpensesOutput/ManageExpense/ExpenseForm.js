@@ -37,23 +37,32 @@ function ExpenseForm() {
   }
 
   return (
-    <View>
-      <Input
-        label="Amount"
-        textInputConfig={{
-          keyboardType: "decimal-pad",
-          onChangeText: () => {},
-        }}
-      />
+    <View style={styles.form}>
+        <Text style={styles.title} >Your Expenses</Text>
+      <View style={styles.row}>
+        <View style={styles.flexItem}>
+          <Input
+            label="Amount"
+            textInputConfig={{
+              keyboardType: "decimal-pad",
+              onChangeText: () => {},
+            }}
+            suffix="€"
+          />
+        </View>
 
-      <Input
-        label="Date"
-        customInput={{
-          onPress: openDatePicker,
-          displayValue: getFormattedDate(selectedDate),
-        }}
-      />
+        <View style={styles.flexItem}>
+          <Input
+            label="Date"
+            customInput={{
+              onPress: openDatePicker,
+              displayValue: getFormattedDate(selectedDate),
+            }}
+          />
+        </View>
+      </View>
 
+      {/* Android Picker */}
       {showPicker && Platform.OS === "android" && (
         <DateTimePicker
           value={tempDate}
@@ -63,6 +72,7 @@ function ExpenseForm() {
         />
       )}
 
+      {/* iOS Modal Picker */}
       {Platform.OS === "ios" && (
         <Modal visible={showPicker} transparent animationType="slide">
           <View style={styles.modalBackdrop}>
@@ -83,13 +93,7 @@ function ExpenseForm() {
         </Modal>
       )}
 
-      {Platform.OS === "android" && showPicker && (
-        <View style={styles.buttonRow}>
-          <Button title="Cancel" onPress={cancelDateHandler} />
-          <Button title="Confirm" onPress={confirmDateHandler} />
-        </View>
-      )}
-
+      {/* Description (unaffected by row) */}
       <Input
         label="Description"
         textInputConfig={{
@@ -105,6 +109,25 @@ function ExpenseForm() {
 export default ExpenseForm;
 
 const styles = StyleSheet.create({
+    form: {
+        marginTop: 14,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        fontFamily: "American Typewriter",
+        marginBottom: 16,
+        textAlign: "center",
+        color: "#333",
+    },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  flexItem: {
+    flex: 1,
+    marginHorizontal: 4,
+  },
   modalBackdrop: {
     flex: 1,
     justifyContent: "flex-end",
