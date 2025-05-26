@@ -1,9 +1,10 @@
 import { useContext, useLayoutEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TextInput, View } from "react-native";
 import IconButton from "../components/UI/IconButton";
 import { GlobalStyles } from "../constants/styles";
 import CustomButton from "../components/UI/CustomButton";
 import { ExpensesContext } from "../store/expense-context";
+import ExpenseForm from "../components/ExpensesOutput/ManageExpense/ExpenseForm";
 
 function ManageExpenses({ route, navigation }) {
   const expensesCtx = useContext(ExpensesContext);
@@ -46,6 +47,7 @@ function ManageExpenses({ route, navigation }) {
 
   return (
     <View style={styles.screenContainer}>
+      <ExpenseForm />
       <View style={styles.buttonsCard}>
         <CustomButton
           mode="flat"
