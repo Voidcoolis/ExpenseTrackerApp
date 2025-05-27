@@ -8,9 +8,15 @@ import { ExpensesContext } from "../store/expense-context";
 
 function ManageExpenses({ route }) {
   const navigation = useNavigation();
-  const { addExpense, updateExpense, deleteExpense } = useContext(ExpensesContext);
+  const {expenses, addExpense, updateExpense, deleteExpense } = useContext(ExpensesContext);
 
   const isEditing = !!route?.params?.expenseId;
+
+  // to get the amount and description of the expense display the current values when editing
+  // = displays default values - check useEffect in ExpenseForm.js
+  const selectedExpense = isEditing
+    ? expenses.find((exp) => exp.id === route.params.expenseId)
+    : null;
 
   function cancelHandler() {
     navigation.goBack();
@@ -37,6 +43,7 @@ function ManageExpenses({ route }) {
         onSubmit={submitHandler}
         onDelete={deleteHandler}
         isEditing={isEditing}
+        defaultValues={selectedExpense}
       />
     </View>
   );

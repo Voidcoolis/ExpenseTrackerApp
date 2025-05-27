@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Platform,
@@ -14,16 +14,27 @@ import { getFormattedDate } from "../../../utilis/date";
 import IconButton from "../../UI/IconButton";
 import { GlobalStyles } from "../../../constants/styles";
 
-function ExpenseForm({ onCancel, onSubmit, isEditing, onDelete }) {
+function ExpenseForm({ onCancel, onSubmit, isEditing, onDelete, defaultValues }) {
   const [inputValues, setInputValues] = useState({
-    amount: "",
-    date: new Date(),
-    description: "",
+    amount: defaultValues ? defaultValues.amount.toString() : "",
+    date: defaultValues ? new Date(defaultValues.date) : new Date(),
+    description: defaultValues ? defaultValues.description : "",
   });
 
   const [inputErrors, setInputErrors] = useState({});
   const [tempDate, setTempDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
+
+  useEffect(() => {
+    if (defaultValues) {
+      setInputValues({
+        amount: defaultValues.amount.toString(),
+        date: new Date(defaultValues.date),
+        description: defaultValues.description,
+      });
+      setTempDate(new Date(defaultValues.date));
+    }
+  }, [defaultValues]);
 
   function inputChangeHandler(inputIdentifier, enteredValue) {
     setInputValues((prev) => ({
