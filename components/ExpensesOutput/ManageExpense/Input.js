@@ -1,17 +1,20 @@
 import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
 import { GlobalStyles } from "../../../constants/styles";
 
-function Input({ label, textInputConfig, customInput, suffix }) {
+function Input({ label, textInputConfig, customInput, suffix, error }) {
+  const inputStyles = [styles.inputBox];
+  if (error) inputStyles.push(styles.invalidInput);
+
   return (
     <View style={styles.inputContainer}>
       <Text style={styles.label}>{label}</Text>
 
       {customInput ? (
-        <Pressable style={[styles.inputBox]} onPress={customInput.onPress}>
+        <Pressable style={inputStyles} onPress={customInput.onPress}>
           <Text style={styles.inputText}>{customInput.displayValue}</Text>
         </Pressable>
       ) : (
-        <View style={[styles.inputBox, styles.inputWithSuffix]}>
+        <View style={[...inputStyles, styles.inputWithSuffix]}>
           <TextInput
             style={[styles.textInput, { flex: 1, paddingRight: suffix ? 0 : 6 }]}
             {...textInputConfig}
@@ -19,6 +22,7 @@ function Input({ label, textInputConfig, customInput, suffix }) {
           {suffix && <Text style={styles.suffix}>{suffix}</Text>}
         </View>
       )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 }
@@ -58,5 +62,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: GlobalStyles.colors.primary700,
     marginLeft: 4,
+  },
+  errorText: {
+    color: "red",
+    marginTop: 4,
+    fontSize: 13,
+  },
+  invalidInput: {
+    borderColor: "red",
   },
 });
