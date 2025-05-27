@@ -12,7 +12,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Input from "./Input";
 import { getFormattedDate } from "../../../utilis/date";
 
-function ExpenseForm() {
+function ExpenseForm({ onCancel, onSubmit, isEditing }) {
   const [inputValues, setInputValues] = useState({
     amount: "",
     date: new Date(),
@@ -49,10 +49,13 @@ function ExpenseForm() {
     setShowPicker(false);
   }
 
-  function validateInputs() {
-    const errors = {};
+  // Allows values like 12.99 or 12,99 to be parsed correctly
+  function submitHandler() {
+    const normalizedAmount = inputValues.amount.replace(",", ".");
+    const amountNumber = parseFloat(normalizedAmount);
 
-    if (!inputValues.amount || isNaN(inputValues.amount) || +inputValues.amount <= 0) {
+    const errors = {};
+    if (!normalizedAmount || isNaN(amountNumber) || amountNumber <= 0) {
       errors.amount = "Enter a valid amount greater than 0.";
     }
 
@@ -60,33 +63,26 @@ function ExpenseForm() {
       errors.description = "Description cannot be empty.";
     }
 
-    setInputErrors(errors);
-
-    return Object.keys(errors).length === 0;
-  }
-
-  function submitHandler() {
-    if (!validateInputs()) {
-      Alert.alert("Invalid input", "Please fix the highlighted fields.");
+    if (Object.keys(errors).length > 0) {
+      setInputErrors(errors);
+      Alert.alert("Invalid input", "Please correct the highlighted fields.");
       return;
     }
 
-    Alert.alert("Success", "Expense submitted successfully!");
-    resetForm();
-  }
+    const expenseData = {
+      amount: amountNumber,  // amount : +inputValues.amount,
+      date: inputValues.date,
+      description: inputValues.description.trim(),
+    };
 
-  function resetForm() {
-    setInputValues({
-      amount: "",
-      date: new Date(),
-      description: "",
-    });
-    setInputErrors({});
+    onSubmit(expenseData);
   }
 
   return (
     <View style={styles.form}>
-      <Text style={styles.title}>Your Expenses</Text>
+      <Text style={styles.title}>
+        {isEditing ? "Edit Expense" : "Add Expense"}
+      </Text>
 
       <View style={styles.row}>
         <View style={styles.flexItem}>
@@ -94,7 +90,7 @@ function ExpenseForm() {
             label="Amount"
             textInputConfig={{
               keyboardType: "decimal-pad",
-              onChangeText: inputChangeHandler.bind(this, "amount"),
+              onChangeText: inputChangeHandler.bind(this, "amount"), // onChangeText: (val) => inputChangeHandler("amount", val),
               value: inputValues.amount,
             }}
             suffix="€"
@@ -147,15 +143,15 @@ function ExpenseForm() {
         textInputConfig={{
           multiline: true,
           autoCorrect: false,
-          onChangeText: inputChangeHandler.bind(this, "description"),
+          onChangeText: inputChangeHandler.bind(this, "description"),  // onChangeText: (val) => inputChangeHandler("description", val),
           value: inputValues.description,
         }}
         error={inputErrors.description}
       />
 
       <View style={styles.actions}>
-        <Button title="Reset" onPress={resetForm} color="#999" />
-        <Button title="Submit" onPress={submitHandler} color="#1e90ff" />
+        <Button title="Cancel" onPress={onCancel} color="#888" />
+        <Button title={isEditing ? "Update" : "Add"} onPress={submitHandler} />
       </View>
     </View>
   );
