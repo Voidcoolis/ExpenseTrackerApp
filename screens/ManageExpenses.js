@@ -8,11 +8,16 @@ import { ExpensesContext } from "../store/expense-context";
 
 function ManageExpenses({ route }) {
   const navigation = useNavigation();
-  const { addExpense, updateExpense } = useContext(ExpensesContext);
+  const { addExpense, updateExpense, deleteExpense } = useContext(ExpensesContext);
 
   const isEditing = !!route?.params?.expenseId;
 
   function cancelHandler() {
+    navigation.goBack();
+  }
+
+  function deleteHandler() {
+    deleteExpense(route.params.expenseId);
     navigation.goBack();
   }
 
@@ -30,6 +35,7 @@ function ManageExpenses({ route }) {
       <ExpenseForm
         onCancel={cancelHandler}
         onSubmit={submitHandler}
+        onDelete={deleteHandler}
         isEditing={isEditing}
       />
     </View>

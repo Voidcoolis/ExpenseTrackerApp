@@ -11,8 +11,10 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Input from "./Input";
 import { getFormattedDate } from "../../../utilis/date";
+import IconButton from "../../UI/IconButton";
+import { GlobalStyles } from "../../../constants/styles";
 
-function ExpenseForm({ onCancel, onSubmit, isEditing }) {
+function ExpenseForm({ onCancel, onSubmit, isEditing, onDelete }) {
   const [inputValues, setInputValues] = useState({
     amount: "",
     date: new Date(),
@@ -150,8 +152,11 @@ function ExpenseForm({ onCancel, onSubmit, isEditing }) {
       />
 
       <View style={styles.actions}>
-        <Button title="Cancel" onPress={onCancel} color="#888" />
+        <Button title="Cancel" onPress={onCancel} color={GlobalStyles.colors.gray500} />
         <Button title={isEditing ? "Update" : "Add"} onPress={submitHandler} />
+        {isEditing && (
+          <IconButton icon="trash-outline" size={28} color={GlobalStyles.colors.error500} onPressBtn={onDelete}/>
+        )}
       </View>
     </View>
   );
@@ -200,6 +205,10 @@ const styles = StyleSheet.create({
   actions: {
     marginTop: 20,
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "snow",
+    borderRadius: 12,
+    marginHorizontal: 10,
   },
 });
