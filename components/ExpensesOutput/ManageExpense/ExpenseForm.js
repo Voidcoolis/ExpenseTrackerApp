@@ -5,7 +5,6 @@ import {
   Modal,
   Button,
   StyleSheet,
-  Pressable,
   Text,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -13,12 +12,25 @@ import Input from "./Input";
 import { getFormattedDate } from "../../../utilis/date";
 
 function ExpenseForm() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+    //another option instead of using multiple useState hooks is to use a single useState hook with an object
+  const [inputValues, setInputValues] = useState({
+    amount: "",
+    date: new Date(),
+    description: "",
+  });
+
   const [tempDate, setTempDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+  function inputChangeHandler(inputIdentifier, enteredValue) {
+    setInputValues((prev) => ({
+      ...prev,
+      [inputIdentifier]: enteredValue,
+    }));
+  }
 
   function openDatePicker() {
-    setTempDate(selectedDate); // start from current value
+    setTempDate(inputValues.date);
     setShowPicker(true);
   }
 
@@ -27,25 +39,27 @@ function ExpenseForm() {
   }
 
   function confirmDateHandler() {
-    setSelectedDate(tempDate);
+    setInputValues((prev) => ({ ...prev, date: tempDate }));
     setShowPicker(false);
   }
 
   function cancelDateHandler() {
-    setTempDate(selectedDate); // reset temp
+    setTempDate(inputValues.date);
     setShowPicker(false);
   }
 
   return (
     <View style={styles.form}>
-        <Text style={styles.title} >Your Expenses</Text>
+      <Text style={styles.title}>Your Expenses</Text>
+
       <View style={styles.row}>
         <View style={styles.flexItem}>
           <Input
             label="Amount"
             textInputConfig={{
               keyboardType: "decimal-pad",
-              onChangeText: () => {},
+              onChangeText: inputChangeHandler.bind(this, "amount"), // or : onChangeText: (val) => inputChangeHandler("amount", val),
+              value: inputValues.amount,
             }}
             suffix="€"
           />
@@ -56,7 +70,7 @@ function ExpenseForm() {
             label="Date"
             customInput={{
               onPress: openDatePicker,
-              displayValue: getFormattedDate(selectedDate),
+              displayValue: getFormattedDate(inputValues.date),
             }}
           />
         </View>
@@ -72,7 +86,7 @@ function ExpenseForm() {
         />
       )}
 
-      {/* iOS Modal Picker */}
+      {/* iOS Picker Modal */}
       {Platform.OS === "ios" && (
         <Modal visible={showPicker} transparent animationType="slide">
           <View style={styles.modalBackdrop}>
@@ -93,13 +107,13 @@ function ExpenseForm() {
         </Modal>
       )}
 
-      {/* Description (unaffected by row) */}
       <Input
         label="Description"
         textInputConfig={{
           multiline: true,
           autoCorrect: false,
-          onChangeText: () => {},
+          onChangeText: inputChangeHandler.bind(this, "description"), // (val) => inputChangeHandler("description", val)
+          value: inputValues.description,
         }}
       />
     </View>
