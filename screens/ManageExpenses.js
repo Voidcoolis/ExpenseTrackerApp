@@ -7,9 +7,11 @@ import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
 import { storeExpense, updateExpense, deleteExpense } from "../utilis/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 function ManageExpenses({ route, navigation }) {
   const [isSubmitting, setIsSubmitting] = useState(false); // for loading spinner
+  const [isError, setIsError] = useState();
 
   const expensesCtx = useContext(ExpensesContext);
 
@@ -28,23 +30,36 @@ function ManageExpenses({ route, navigation }) {
 
   async function deleteHandler() {
     setIsSubmitting(true);
-    await deleteExpense(editedExpenseId);
-    // setIsSubmitting(false);   // no need because we go back anyway
-    expensesCtx.deleteExpense(editedExpenseId);
+    try {
+      await deleteExpense(editedExpenseId);
+      expensesCtx.deleteExpense(editedExpenseId);
 
-    navigation.goBack();
+      navigation.goBack();
+    } catch (error) {
+      setIsError("An error occured while deleting the expense!");
+      setIsSubmitting(false);
+    }
   }
 
   async function submitHandler(expenseData) {
     setIsSubmitting(true);
-    if (isEditing) {
-      expensesCtx.updateExpense(editedExpenseId, expenseData);
-      await updateExpense(editedExpenseId, expenseData);
-    } else {
-      const id = await storeExpense(expenseData);
-      expensesCtx.addExpense({ ...expenseData, id: id });
+    try {
+      if (isEditing) {
+        expensesCtx.updateExpense(editedExpenseId, expenseData);
+        await updateExpense(editedExpenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        expensesCtx.addExpense({ ...expenseData, id: id });
+      }
+      navigation.goBack();
+    } catch (error) {
+      setIsError("An error occured while updating/adding expense!");
+      setIsSubmitting(false);
     }
-    navigation.goBack();
+  }
+  
+  if (isError && !isSubmitting) {
+    return <ErrorOverlay message={isError} />;
   }
 
   if (isSubmitting) {

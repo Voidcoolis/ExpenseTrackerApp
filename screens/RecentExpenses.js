@@ -4,9 +4,11 @@ import { ExpensesContext } from "../store/expense-context";
 import { getDateMinusDays } from "../utilis/date";
 import { fetchExpenses } from "../utilis/http";
 import LoadingOverlay from "../components/UI/LoadingOverlay";
+import ErrorOverlay from "../components/UI/ErrorOverlay";
 
 function RecentExpenses() {
   const [isFetchingState, setIsFetchingState] = useState(true); // loading spinner
+  const [isError, setIsError] = useState();
 
   const expensesCtx = useContext(ExpensesContext);
 
@@ -14,12 +16,21 @@ function RecentExpenses() {
   useEffect(() => {
     async function getExpenses(){
       setIsFetchingState(true);
+      try {
       const expenses = await fetchExpenses();
-      setIsFetchingState(false);
       expensesCtx.setExpenses(expenses);
+      } catch (error) {
+        setIsError("Could not fetch expenses! ") // or massage from Backend
+      }
+      setIsFetchingState(false);
+
     }
     getExpenses();
   }, []);
+
+  if (isError && !isFetchingState) {
+    return <ErrorOverlay message={isError}/>
+  }
 
   if (isFetchingState) {
     return(
