@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -6,8 +6,11 @@ import ExpenseForm from "../components/ExpensesOutput/ManageExpense/ExpenseForm"
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
 import { storeExpense, updateExpense, deleteExpense } from "../utilis/http";
+import LoadingOverlay from "../components/UI/LoadingOverlay";
 
 function ManageExpenses({ route, navigation }) {
+  const [isSubmitting, setIsSubmitting] = useState(false); // for loading spinner
+
   const expensesCtx = useContext(ExpensesContext);
 
   const editedExpenseId = route?.params?.expenseId;
@@ -24,12 +27,16 @@ function ManageExpenses({ route, navigation }) {
   }
 
   async function deleteHandler() {
-    expensesCtx.deleteExpense(editedExpenseId);
+    setIsSubmitting(true);
     await deleteExpense(editedExpenseId);
+    // setIsSubmitting(false);   // no need because we go back anyway
+    expensesCtx.deleteExpense(editedExpenseId);
+
     navigation.goBack();
   }
 
   async function submitHandler(expenseData) {
+    setIsSubmitting(true);
     if (isEditing) {
       expensesCtx.updateExpense(editedExpenseId, expenseData);
       await updateExpense(editedExpenseId, expenseData);
@@ -38,6 +45,10 @@ function ManageExpenses({ route, navigation }) {
       expensesCtx.addExpense({ ...expenseData, id: id });
     }
     navigation.goBack();
+  }
+
+  if (isSubmitting) {
+    return <LoadingOverlay />;
   }
 
   return (
