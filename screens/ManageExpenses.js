@@ -5,36 +5,37 @@ import { useNavigation } from "@react-navigation/native";
 import ExpenseForm from "../components/ExpensesOutput/ManageExpense/ExpenseForm";
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
-import { storeExpense } from "../utilis/http";
+import { storeExpense, updateExpense, deleteExpense } from "../utilis/http";
 
-function ManageExpenses({ route }) {
-  const navigation = useNavigation();
-  const { expenses, addExpense, updateExpense, deleteExpense } =
-    useContext(ExpensesContext);
+function ManageExpenses({ route, navigation }) {
+  const expensesCtx = useContext(ExpensesContext);
 
-  const isEditing = !!route?.params?.expenseId;
+  const editedExpenseId = route?.params?.expenseId;
+  const isEditing = !!editedExpenseId;
 
   // to get the amount and description of the expense display the current values when editing
   // = displays default values - check useEffect in ExpenseForm.js
   const selectedExpense = isEditing
-    ? expenses.find((exp) => exp.id === route.params.expenseId)
+    ? expensesCtx.expenses.find((exp) => exp.id === editedExpenseId)
     : null;
 
   function cancelHandler() {
     navigation.goBack();
   }
 
-  function deleteHandler() {
-    deleteExpense(route.params.expenseId);
+  async function deleteHandler() {
+    expensesCtx.deleteExpense(editedExpenseId);
+    await deleteExpense(editedExpenseId);
     navigation.goBack();
   }
 
   async function submitHandler(expenseData) {
     if (isEditing) {
-      updateExpense(route.params.expenseId, expenseData);
+      expensesCtx.updateExpense(editedExpenseId, expenseData);
+      await updateExpense(editedExpenseId, expenseData);
     } else {
       const id = await storeExpense(expenseData);
-      addExpense({ ...expenseData, id: id });
+      expensesCtx.addExpense({ ...expenseData, id: id });
     }
     navigation.goBack();
   }
