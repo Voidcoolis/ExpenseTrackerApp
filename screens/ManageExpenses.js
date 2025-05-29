@@ -9,7 +9,8 @@ import { storeExpense } from "../utilis/http";
 
 function ManageExpenses({ route }) {
   const navigation = useNavigation();
-  const {expenses, addExpense, updateExpense, deleteExpense } = useContext(ExpensesContext);
+  const { expenses, addExpense, updateExpense, deleteExpense } =
+    useContext(ExpensesContext);
 
   const isEditing = !!route?.params?.expenseId;
 
@@ -28,12 +29,12 @@ function ManageExpenses({ route }) {
     navigation.goBack();
   }
 
-  function submitHandler(expenseData) {
+  async function submitHandler(expenseData) {
     if (isEditing) {
       updateExpense(route.params.expenseId, expenseData);
     } else {
-      storeExpense(expenseData);
-      addExpense(expenseData);
+      const id = await storeExpense(expenseData);
+      addExpense({ ...expenseData, id: id });
     }
     navigation.goBack();
   }

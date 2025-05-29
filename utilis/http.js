@@ -1,8 +1,10 @@
 import axios from "axios";
 import { API_URL } from "./apiConfig";
 
-export function storeExpense(expenseData) {
-  axios.post(API_URL + "/expenses.json", expenseData);
+export async function storeExpense(expenseData) {
+  const response = await axios.post(API_URL + "/expenses.json", expenseData);
+  const id = response.data.name; // holds the firebase auto generated id
+  return id;
 }
 
 export async function fetchExpenses() {

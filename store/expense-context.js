@@ -12,20 +12,24 @@ export const ExpensesContext = createContext({
 function expensesReducer(state, action) {
   switch (action.type) {
     case "ADD":
-      const id = new Date().toString() + Math.random().toString();
+      // const id = new Date().toString() + Math.random().toString(); //doesn't work with firebase, because it generates its own unique ids
 
-      return [{ ...action.payload, id: id }, ...state];
-    
-    case 'SET':
-      return action.payload;
+      return [action.payload, ...state];  //return [{ ...action.payload, id: id }, ...state];
+
+    case "SET":
+      //change the order of displayed expenses(in order of when they were added)
+      const inverted = action.payload.reverse();
+      return inverted;
 
     case "UPDATE":
-        const updatableExpenseIndex = state.findIndex((expense) => expense.id === action.payload.id);
-        const updatableExpense = state[updatableExpenseIndex];
-        const updatedItem = { ...updatableExpense, ...action.payload.data };
-        const updatedExpenses = [...state];
-        updatedExpenses[updatableExpenseIndex] = updatedItem;
-        return updatedExpenses;
+      const updatableExpenseIndex = state.findIndex(
+        (expense) => expense.id === action.payload.id
+      );
+      const updatableExpense = state[updatableExpenseIndex];
+      const updatedItem = { ...updatableExpense, ...action.payload.data };
+      const updatedExpenses = [...state];
+      updatedExpenses[updatableExpenseIndex] = updatedItem;
+      return updatedExpenses;
     case "DELETE":
       return state.filter((expense) => expense.id !== action.payload.id);
 
@@ -42,7 +46,7 @@ function ExpensesContextProvider({ children }) {
   }
 
   function setExpenses(expenses) {
-    dispatch({type: "SET", payload: expenses})
+    dispatch({ type: "SET", payload: expenses });
   }
 
   function deleteExpense(id) {
