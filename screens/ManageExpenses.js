@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import ExpenseForm from "../components/ExpensesOutput/ManageExpense/ExpenseForm";
 import { GlobalStyles } from "../constants/styles";
 import { ExpensesContext } from "../store/expense-context";
+import { storeExpense } from "../utilis/http";
 
 function ManageExpenses({ route }) {
   const navigation = useNavigation();
@@ -31,6 +32,7 @@ function ManageExpenses({ route }) {
     if (isEditing) {
       updateExpense(route.params.expenseId, expenseData);
     } else {
+      storeExpense(expenseData);
       addExpense(expenseData);
     }
     navigation.goBack();
